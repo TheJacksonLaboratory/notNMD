@@ -11,11 +11,18 @@ predictNMD <- function(orfs){
     m <- match(notNMDnames, colnames(orfs))
     if(all(!is.na(m))){
         orfs <- orfs[,m]
-        orfs_p <- predict(preProcValues, orfs)
+        keep <- which(apply(orfs, 1, function(x) all(!is.na(x))))
+        orfs_p <- orfs[keep,]
+
+        orfs_p <- predict(preProcValues, orfs_p)
 
         # p <- predict(model_gbm, orfs_p, type="prob")[,1]
         n <- predict(model_gbm, orfs_p)
-        return(n)
+
+        all_n <- rep(NA, nrow(orfs))
+        all_n[keep] <- as.character(n)
+
+        return(all_n)
 
     }else{
         message("please provide the correct input")
