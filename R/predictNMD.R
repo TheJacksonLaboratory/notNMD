@@ -7,7 +7,7 @@
 #' @import gbm
 #' @examples
 #' @author Beth Signal
-predictNMD <- function(orfs){
+predictNMD <- function(orfs, output="class"){
     m <- match(notNMDnames, colnames(orfs))
     if(all(!is.na(m))){
         orfs <- orfs[,m]
@@ -15,12 +15,15 @@ predictNMD <- function(orfs){
         orfs_p <- orfs[keep,]
 
         orfs_p <- predict(preProcValues, orfs_p)
-
-        # p <- predict(model_gbm, orfs_p, type="prob")[,1]
-        n <- predict(model_gbm, orfs_p)
-
         all_n <- rep(NA, nrow(orfs))
-        all_n[keep] <- as.character(n)
+
+        if(output=="prob"){
+            n <- predict(model_gbm, orfs_p, type="prob")[,1]
+            all_n[keep] <- as.numeric(n)
+        }else{
+            n <- predict(model_gbm, orfs_p)
+            all_n[keep] <- as.character(n)
+        }
 
         return(all_n)
 

@@ -4,7 +4,7 @@
 \alias{predictNMD}
 \title{Predict if a transcript is subject to nonsense mediated decay}
 \usage{
-predictNMD(orfs)
+predictNMD(orfs, output = "class")
 }
 \arguments{
 \item{orfs}{orf information data.frame produced by GeneStructureTools::get_orfs()}
