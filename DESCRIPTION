@@ -1,0 +1,21 @@
+Package: notNMD
+Type: Package
+Title: Prediction of NMD potential in transcripts
+Version: 0.1.1
+Author: Beth Signal
+Maintainer: Beth Signal <b.signal@garvan.org.au>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: FALSE
+RoxygenNote: 6.0.1
+Depends:
+    R(>= 3.0),
+    caret,
+    GeneStructureTools
+Imports:
+    plyr,
+    GenomicRanges,
+    gbm
+    
