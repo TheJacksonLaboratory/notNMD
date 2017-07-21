@@ -19,12 +19,18 @@ orfs_normal <- get_orfs(normal_transcripts, g, returnLongestOnly = FALSE,all_fra
 save(orfs_normal, normal_transcripts, file = "orfs_normal.Rdata")
 load("orfs_normal.Rdata")
 
+lncRNA_transcripts <- gtf.exons[which(gtf.exons$transcript_type %in%
+                                          c("lincRNA", "antisense", "sense_intronic","sense_overlapping") &
+                                          gtf.exons$transcript_support_level < 3)]
+
+orfs_lncRNA <- get_orfs(lncRNA_transcripts, g, returnLongestOnly = FALSE,all_frames = TRUE)
+orfs_normal <- rbind(orfs_lncRNA, orfs_normal)
 
 orfs_normal$orf_length <- as.numeric(orfs_normal$orf_length)
 orfs_normal$gene_id <- gtf.exons$gene_id[match(orfs_normal$id, gtf.exons$transcript_id)]
 orfs_normal$transcript_type <- gtf.exons$transcript_type[match(orfs_normal$id, gtf.exons$transcript_id)]
 
-orfs_pc <- orfs_normal[orfs_normal$transcript_type == "protein_coding",]
+orfs_pc <- orfs_normal[orfs_normal$transcript_type != "nonsense_mediated_decay",]
 orfs_nmd_long <- orfs_normal[orfs_normal$transcript_type == "nonsense_mediated_decay" & orfs_normal$orf_length >= 100,]
 orfs_nmd_short <- orfs_normal[orfs_normal$transcript_type == "nonsense_mediated_decay" & orfs_normal$orf_length < 100,]
 orfs_nmd <- rbind(orfs_nmd_long, orfs_nmd_short)
@@ -38,7 +44,7 @@ rm <- which(apply(orfs_train, 1, function(x) any(is.na(x))))
 orfs_train <- orfs_train[-rm,]
 
 index_1 <- which(orfs_train$transcript_type == "nonsense_mediated_decay")
-index_2 <- which(orfs_train$transcript_type == "protein_coding")
+index_2 <- which(orfs_train$transcript_type != "nonsense_mediated_decay")
 
 set.seed(1)
 
@@ -58,10 +64,14 @@ train$gene_id <- NULL
 
 test <- orfs_train[test_index,]
 test$orf_sequence <- NULL
+test$Class <- "nonsense_mediated_decay"
+test$Class[test$transcript_type != "nonsense_mediated_decay"] <- "not_nmd"
 
 preProcValues <- preProcess(train, method = c("center", "scale"))
 
 train_p <- predict(preProcValues, train)
+train_p$transcript_type[train_p$transcript_type != "nonsense_mediated_decay"] <- "not_nmd"
+
 test_p <- predict(preProcValues, test)
 
 fitControl <- trainControl(method = "repeatedcv",number = 3,repeats = 10,classProbs=TRUE)
@@ -73,8 +83,8 @@ plot(density(p))
 n <- predict(model_gbm, test_p)
 
 k <- which(test$orf_length > 100)
-confusionMatrix(n[k], test$transcript_type[k])
-confusionMatrix(n, test$transcript_type)
+confusionMatrix(n[k], test$Class[k])
+confusionMatrix(n, test$Class)
 
 notNMDnames <- colnames(train_p)
 notNMDnames <- notNMDnames[-which(notNMDnames == "transcript_type")]
