@@ -1,0 +1,52 @@
+---
+title: "notNMD: Prediction of nonsense mediated decay potential in transcripts"
+author: "Beth Signal"
+date: "23 October 2017"
+output:
+    html_document:
+        toc: true
+        theme: united
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Quick usage guide
+
+```{r usenotNMD}
+suppressWarnings({suppressMessages({
+    library(GeneStructureTools)
+    library(notNMD)
+    library(GenomicRanges)
+})})
+
+# import gtf annotation
+gtf <- rtracklayer::import("~/Documents/Projects/resources/genomes/gencode.v21.annotation.gtf")
+# load BSgenome annotation
+g <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+
+# test on a lincRNA and a proetin coding gene
+test_genes <- gtf[which(gtf$type=="exon" & gtf$gene_name %in% c("TUNAR", "EZH2"))]
+
+orf_details <- getOrfs(test_genes, 
+                       BSgenome = g, # BSgenome object for nt sequences
+                       all_frames = TRUE, # translate all frames
+                       returnLongestOnly = FALSE) # return all 3 frames
+
+# predict NMD potential
+orf_details$nmd_prob <- predictNMD(orf_details, output="prob") # as probability value
+orf_details$nmd_class <- predictNMD(orf_details, output="class") # as binary class
+
+# summarise
+orf_details$transcript_type <- gtf$transcript_type[match(orf_details$id, gtf$transcript_id)]
+min_NMD <- aggregate(nmd_prob ~ id+transcript_type, orf_details, min) # min NMD probability for all 3 frames
+# reassign class
+min_NMD$nmd_class <- "notNMD"
+min_NMD$nmd_class[min_NMD$nmd_prob > 0.5] <- "NMD"
+
+table(min_NMD$nmd_class, min_NMD$transcript_type)
+
+```
+

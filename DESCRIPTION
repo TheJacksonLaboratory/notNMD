@@ -4,9 +4,8 @@ Title: Prediction of NMD potential in transcripts
 Version: 0.1.1
 Author: Beth Signal
 Maintainer: Beth Signal <b.signal@garvan.org.au>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: Prediction of nonsense mediated decay potential in transcripts.
+License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: FALSE
 RoxygenNote: 6.0.1
