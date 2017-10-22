@@ -1,40 +1,31 @@
-# GeneStructureTools
+# notNMD
 
-*R package for manipulation and analysis of spliced gene structures*
+**R package for prediction of nonsense mediated decay potential in transcripts**
 
 ## Installation
-GeneStructureTools can be installed:
+notNMD can be installed:
 ```
 library(devtools)
-install_github("betsig/GeneStructureTools")
+install_github("betsig/notNMD")
 ```
 After installation, the package can be loaded into R.
 ```
-library(GeneStructureTools)
+library(notNMD)
 ```
-
-## Introduction
-
-GeneStructureTools is an in-development package for the manipulation and analysis of transcribed gene structures.
-
-We have provided functions for importing Whippet alternative splicing data, and the analysis of these splicing events. 
-Splicing events can also be defined manually if you are using a different splicing analysis tool to Whippet.
-For specific events - currently including exon skipping, intron retention, alternative splice site usage and alternative first/last exons - transcripts can be made in silico which use the two splicing modes - i.e. transcripts containing and transcripts skipping an exon. 
-These transcripts do not have to be pre-annotated, and thus all potential isoforms can be compared for an event.
-
-Current comparisons of transcripts include annotating and analysing ORF and UTR features (length, locations, difference/similarity between transcripts), and predicting nonsense mediated decay (NMD) potential.
-
-We also have functions for re-annotation of .GTF features, such as annotating UTRs as 3' or 5', and assigning a broader biotype for genes and transcripts so more informative analysis can be performed between these classes. 
 
 ## Usage
 
-Please check the vignette for usage details.
+Please check the [vignette](http://htmlpreview.github.io/?https://github.com/betsig/notNMD/blob/master/vignette.html) for usage details.
 
-## Development
+## Training and Performance
 
-GeneStructureTools is still undergoing development and documentation.
-If you would like to contribute, please submit a pull request!
-If you have any suggestions for features, please contact Beth Signal (b.signal@garvan.org.au).
+notNMD can be used for prediction of NMD potential in transcripts supplied as GRanges.
+Scripts used for training are available in source_scripts/
+Briefly, we used GeneStructureTools to annotate open reading frame details in transcripts classed as protein coding or lncRNAs (not NMD targets), and transcripts classed as nonsense mediated decay from Human Gencode v21 annotations.
+We then trained a GBM model on a training set of these transcripts, and tested performance on an independant testing set:
+
+![](https://github.com/betsig/notNMD/blob/master/performance.png)
+
 
 
 
