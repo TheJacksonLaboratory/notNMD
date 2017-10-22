@@ -1,6 +1,6 @@
 #' Predict if a transcript is subject to nonsense mediated decay
 #'
-#' @param orfs orf information data.frame produced by GeneStructureTools::get_orfs()
+#' @param orfs orf information data.frame produced by GeneStructureTools::getOrfs()
 #' @param output class or prob - output a class prediction or probability of nonsense mediated decay?
 #' @return vector with predicted class or probaility for nonsense mediated decay
 #' @export
