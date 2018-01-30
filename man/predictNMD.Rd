@@ -7,10 +7,12 @@
 predictNMD(orfs, output = "class")
 }
 \arguments{
-\item{orfs}{orf information data.frame produced by GeneStructureTools::get_orfs()}
+\item{orfs}{orf information data.frame produced by GeneStructureTools::getOrfs()}
+
+\item{output}{class or prob - output a class prediction or probability of nonsense mediated decay?}
 }
 \value{
-vector with predicted class
+vector with predicted class or probaility for nonsense mediated decay
 }
 \description{
 Predict if a transcript is subject to nonsense mediated decay
