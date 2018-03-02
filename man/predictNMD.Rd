@@ -4,12 +4,14 @@
 \alias{predictNMD}
 \title{Predict if a transcript is subject to nonsense mediated decay}
 \usage{
-predictNMD(orfs, output = "class")
+predictNMD(orfs, output = "class", model = "base")
 }
 \arguments{
 \item{orfs}{orf information data.frame produced by GeneStructureTools::getOrfs()}
 
 \item{output}{class or prob - output a class prediction or probability of nonsense mediated decay?}
+
+\item{model}{use base or lncRNA model?}
 }
 \value{
 vector with predicted class or probaility for nonsense mediated decay

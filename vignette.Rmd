@@ -1,7 +1,7 @@
 ---
 title: "notNMD: Prediction of nonsense mediated decay potential in transcripts"
 author: "Beth Signal"
-date: "23 October 2017"
+date: "02 March 2018"
 output:
     html_document:
         toc: true
@@ -27,13 +27,14 @@ gtf <- rtracklayer::import("~/Documents/Projects/resources/genomes/gencode.v21.a
 # load BSgenome annotation
 g <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 
-# test on a lincRNA and a proetin coding gene
-test_genes <- gtf[which(gtf$type=="exon" & gtf$gene_name %in% c("TUNAR", "EZH2"))]
+# test on a lincRNA and a protein coding gene
+test_genes <- gtf[which(gtf$type=="exon"  & gtf$transcript_support_level < 3 
+                        & gtf$gene_name %in% c("MIAT", "SPIN3"))]
 
 orf_details <- getOrfs(test_genes, 
                        BSgenome = g, # BSgenome object for nt sequences
-                       all_frames = TRUE, # translate all frames
-                       returnLongestOnly = FALSE) # return all 3 frames
+                       returnLongestOnly = TRUE, # return all 3 frames
+                       uORFs = TRUE)
 
 # predict NMD potential
 orf_details$nmd_prob <- predictNMD(orf_details, output="prob") # as probability value
@@ -41,12 +42,13 @@ orf_details$nmd_class <- predictNMD(orf_details, output="class") # as binary cla
 
 # summarise
 orf_details$transcript_type <- gtf$transcript_type[match(orf_details$id, gtf$transcript_id)]
-min_NMD <- aggregate(nmd_prob ~ id+transcript_type, orf_details, min) # min NMD probability for all 3 frames
-# reassign class
-min_NMD$nmd_class <- "notNMD"
-min_NMD$nmd_class[min_NMD$nmd_prob > 0.5] <- "NMD"
-
-table(min_NMD$nmd_class, min_NMD$transcript_type)
+table(orf_details$nmd_class, orf_details$transcript_type)
 
 ```
+```{r}
+# predict NMD potential (with lncRNA model)
+orf_details$nmd_prob.lnc <- predictNMD(orf_details, output="prob", model="lncRNA") # as probability value
+orf_details$nmd_class.lnc <- predictNMD(orf_details, output="class", model="lncRNA") # as binary class
 
+table(orf_details$nmd_class.lnc, orf_details$transcript_type)
+```
