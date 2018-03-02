@@ -52,3 +52,25 @@ orf_details$nmd_class.lnc <- predictNMD(orf_details, output="class", model="lncR
 
 table(orf_details$nmd_class.lnc, orf_details$transcript_type)
 ```
+ 
+## Performance
+
+Performance from testing datasets
+
+```{r}
+library(caret)
+base_performance <- read.csv("source_data/base_model_performance.csv")
+base_performance$pred_class <- ifelse(base_performance$prob > 0.5, "nonsense_mediated_decay", "not_nmd")
+
+confusionMatrix(base_performance$Class, base_performance$pred_class)
+
+
+lnc_performance <- read.csv("source_data/lnc_model_performance.csv")
+lnc_performance$pred_class <- ifelse(lnc_performance$prob > 0.5, "nonsense_mediated_decay", "not_nmd")
+
+confusionMatrix(lnc_performance$Class, lnc_performance$pred_class)
+``` 
+
+proportion of different transcript biotypes classed as nmd or not_nmd by both models
+
+![](base_v_lncRNA_class.png)
