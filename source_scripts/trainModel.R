@@ -176,3 +176,5 @@ n <- predict(model_gbm.long.lnc, test_p)
 c_long.lnc <- confusionMatrix(test$Class, n)
 
 save(model_gbm.long.lnc, preProcValues.long.lnc, c_long.lnc, file="source_data/model_gbm_long.lnc.RData")
+test.base <- test[,c(1,2,21,24,25)]
+write.csv(test.base, "source_data/base_model_performance.csv", row.names = F,quote=F)
