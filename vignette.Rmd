@@ -1,7 +1,7 @@
 ---
 title: "notNMD: Prediction of nonsense mediated decay potential in transcripts"
 author: "Beth Signal"
-date: "02 March 2018"
+date: "05 March 2018"
 output:
     html_document:
         toc: true
@@ -23,7 +23,7 @@ suppressWarnings({suppressMessages({
 })})
 
 # import gtf annotation
-gtf <- rtracklayer::import("~/Documents/Projects/resources/genomes/gencode.v21.annotation.gtf")
+gtf <- rtracklayer::import("~/Downloads/gencode.v21.annotation.gtf.gz")
 # load BSgenome annotation
 g <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 

@@ -1,7 +1,7 @@
 library(plyr)
 library(GenomicRanges)
 library(caret)
-devtools::install("~/Documents/Projects/GeneStructureTools/")
+devtools::install_github("betsig/GeneStructureTools")
 library(GeneStructureTools)
 
 load("source_data/orfs_normal.Rdata")
@@ -11,14 +11,6 @@ load("source_data/orfs_pseudo.Rdata")
 
 orfs_all <- rbind(orfs_normal,orfs_lncRNA, orfs_other,orfs_pseudo)
 
-load("source_data/upstream_orfs.Rdata")
-
-m = match(orfs_all$id, uorfs_bytrans$id)
-orfs_all = cbind(orfs_all, uorfs_bytrans[m,-c(1)])
-
-for(i in 17:ncol(orfs_all)){
-    orfs_all[which(is.na(orfs_all[,i])),i] <- 0
-}
 
 orfs_all$orf_length <- as.numeric(orfs_all$orf_length)
 orfs_all$gene_id <- gtf.exons$gene_id[match(orfs_all$id, gtf.exons$transcript_id)]
@@ -70,7 +62,8 @@ train$seq_length <- NULL
 train$exons=NULL
 train$orf_length=NULL
 train$seq_length_nt=NULL
-train$total_uorfs=NULL
+train$upstream_count=NULL
+train$downstream_count=NULL
 
 test <- orfs_train[test_index,]
 test$orf_sequence <- NULL
@@ -94,8 +87,19 @@ model_gbm.long <- train(transcript_type ~ .,
                         weights=model_weights,
                         verbose=F)
 
+p <- predict(model_gbm.long, test_p, type="prob")[,1]
+test$prob=p
+n <- predict(model_gbm.long, test_p)
+test$pred_class <- n
+
+c_long <- confusionMatrix(test$pred_class, test$Class)
+
 preProcValues.long <- preProcValues
+
+test.base <- test[,c(1,2,21,24,25)]
+
 save(model_gbm.long, train_ids, test_ids, preProcValues.long, file="source_data/model_gbm_long.RData")
+write.csv(test.base, file="source_data/base_model_performance.csv", quote=F, row.names=F)
 
 ############### +lncrna model ##################
 
@@ -144,7 +148,8 @@ train$seq_length <- NULL
 train$exons=NULL
 train$orf_length=NULL
 train$seq_length_nt=NULL
-train$total_uorfs=NULL
+train$upstream_count=NULL
+train$downstream_count=NULL
 
 test <- orfs_train[orfs_train$id %in% test_ids.lnc,]
 test$orf_sequence <- NULL
@@ -173,8 +178,10 @@ model_gbm.long.lnc <- train(transcript_type ~ .,
 p <- predict(model_gbm.long.lnc, test_p, type="prob")[,1]
 test$prob=p
 n <- predict(model_gbm.long.lnc, test_p)
-c_long.lnc <- confusionMatrix(test$Class, n)
+c_long.lnc <- confusionMatrix(n,test$Class)
+
+test.lnc <- test[,c(1:2,21, 24,25)]
 
 save(model_gbm.long.lnc, preProcValues.long.lnc, c_long.lnc, file="source_data/model_gbm_long.lnc.RData")
-test.base <- test[,c(1,2,21,24,25)]
-write.csv(test.base, "source_data/base_model_performance.csv", row.names = F,quote=F)
+write.csv(test.lnc, file="source_data/lnc_model_performance.csv", quote=F, row.names=F)
+
