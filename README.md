@@ -24,7 +24,7 @@ Scripts used for training are available in source_scripts/
 Briefly, we used GeneStructureTools to annotate open reading frame details in transcripts classed as protein coding or lncRNAs (not NMD targets), and transcripts classed as nonsense mediated decay from Human Gencode v21 annotations.
 We then trained a GBM model on a training set of these transcripts, and tested performance on an independant testing set:
 
-![](https://github.com/betsig/notNMD/blob/master/performance.png)
+![](https://github.com/betsig/notNMD/blob/master/model_performance.png)
 
 
 
