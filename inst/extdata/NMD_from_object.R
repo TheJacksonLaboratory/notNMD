@@ -6,7 +6,6 @@ library(notNMD)
 
 load(args[1])
 
-
 if(is.null(useModel)){useModel="base"}
 
 if(exists("orfsX")){

@@ -1,7 +1,7 @@
 Package: notNMD
 Type: Package
 Title: Prediction of NMD potential in transcripts
-Version: 0.3.1
+Version: 0.4.0
 Author: Beth Signal
 Maintainer: Beth Signal <b.signal@garvan.org.au>
 Description: Prediction of nonsense mediated decay potential in transcripts.

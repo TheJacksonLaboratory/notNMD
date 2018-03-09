@@ -95,7 +95,7 @@ test$pred_class <- n
 c_long <- confusionMatrix(test$pred_class, test$Class)
 
 preProcValues.long <- preProcValues
-
+preProcValues=preProcValues.long
 test.base <- test[,c(1,2,21,24,25)]
 
 save(model_gbm.long, train_ids, test_ids, preProcValues.long, file="source_data/model_gbm_long.RData")
@@ -148,8 +148,7 @@ train$seq_length <- NULL
 train$exons=NULL
 train$orf_length=NULL
 train$seq_length_nt=NULL
-train$upstream_count=NULL
-train$downstream_count=NULL
+train$total_orfs=NULL
 
 test <- orfs_train[orfs_train$id %in% test_ids.lnc,]
 test$orf_sequence <- NULL
@@ -185,3 +184,5 @@ test.lnc <- test[,c(1:2,21, 24,25)]
 save(model_gbm.long.lnc, preProcValues.long.lnc, c_long.lnc, file="source_data/model_gbm_long.lnc.RData")
 write.csv(test.lnc, file="source_data/lnc_model_performance.csv", quote=F, row.names=F)
 
+notNMDnames=colnames(orfs_train)[1:21]
+save(model_gbm.long, model_gbm.long.lnc, preProcValues, notNMDnames, file="R/sysdata.rda")

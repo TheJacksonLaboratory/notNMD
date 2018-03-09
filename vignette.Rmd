@@ -1,7 +1,7 @@
 ---
 title: "notNMD: Prediction of nonsense mediated decay potential in transcripts"
 author: "Beth Signal"
-date: "05 March 2018"
+date: "09 March 2018"
 output:
     html_document:
         toc: true
@@ -29,7 +29,7 @@ g <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 
 # test on a lincRNA and a protein coding gene
 test_genes <- gtf[which(gtf$type=="exon"  & gtf$transcript_support_level < 3 
-                        & gtf$gene_name %in% c("MIAT", "SPIN3"))]
+                        & gtf$gene_name %in% c("SMIM12", "HULC"))]
 
 orf_details <- getOrfs(test_genes, 
                        BSgenome = g, # BSgenome object for nt sequences
